@@ -2,6 +2,7 @@
 import Lexeme, TokenTypes
 
 class Token:
+	position = None
 	lexeme = None
 	lineNumber = None
 	columnNumber = None
@@ -10,14 +11,15 @@ class Token:
 	data = None
 	tokenType = None
 
-	def __init__(self, in_line_num, in_column_num, in_lexeme):
+	def __init__(self, in_line_num, in_column_num, in_lexeme, in_token_type):
+		self.tokenType = in_token_type
 		self.lineNumber = in_line_num
 		self.columnNumber = in_column_num
 		self.lexeme = in_lexeme
 
 	def getType(self):
 		#return(self.tokenType)
-		return("TBD")
+		return(self.tokenType)
 
 	def getLexeme(self):
 		return(self.lexeme)
@@ -27,6 +29,9 @@ class Token:
 
 	def getColumnNumber(self):
 		return(self.columnNumber)
+		
+	def getPosition(self):
+		return(self.position)
 
 
 	# Determine what type of token i am based on my global lexeme literal

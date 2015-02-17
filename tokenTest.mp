@@ -1,3 +1,3 @@
-if for while
-a if
-a = 2
+int denbigh = 4 ;
+
+denbigh = denbigh + 1 ;

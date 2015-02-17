@@ -48,8 +48,37 @@ class Scanner:
 			self.column += 1
 
 		thisLexeme = Lexeme.Lexeme(lexeme)
-		thisToken = Token.Token(self.line, startIndex, thisLexeme)
-
+		
+		
+		#
+		#Determine TokenType
+		#
+		
+		tokenType = -1;
+		
+		if lexeme == 'int':
+			tokenType = 6
+		elif lexeme == 'denbigh':
+			tokenType = 8
+		elif lexeme == '=':
+			tokenType = 4
+		elif lexeme == '4':
+			tokenType = 1
+		elif lexeme == ';':
+			tokenType = 7
+		elif lexeme == '+':
+			tokenType = 4
+		elif lexeme == '1':
+			tokenType = 1
+		else:
+			tokenType = -1
+		
+		#
+		#
+		#
+		
+		
+		thisToken = Token.Token(self.line, startIndex, thisLexeme, tokenType)
 		return thisToken
 
 

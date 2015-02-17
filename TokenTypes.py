@@ -10,4 +10,7 @@ class TokenType:
 	else_token = 3
 	comparison_token = 4
 	endOfFile_token = 5
+	literal_token = 6
+	single_String_token = 7
+	best_token = 8
 	corrupted = -1
