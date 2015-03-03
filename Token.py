@@ -10,6 +10,7 @@ class Token:
 	data = None
 	tokenType = None
 
+
 	def __init__(self, inLineNum, inColumnNum):
 		self.lineNumber = inLineNum
 		self.columnNumber = inColumnNum
@@ -32,3 +33,4 @@ class Token:
 
 	def getColumnNumber(self):
 		return(self.columnNumber)
+		
