@@ -1,6 +1,7 @@
 # Parser
 import sys
-import Lexeme, Token, TokenTypes, Scanner
+import Lexeme, Token, Scanner
+from TokenType import TokenType
 
 def main(argv):
 	scanner = Scanner.Scanner()
@@ -10,16 +11,17 @@ def main(argv):
 
 	while flag is False:
 		token = scanner.getNextToken()
-		if token is None:
-			flag = True
 
-		if flag is False:
+		if token is not None:
 			tokenType = token.getType()
 			lineNumber = token.getLineNumber()
 			columnNumber = token.getColumnNumber()
 			value = token.getLexeme().getValue()
 
 			print("Token: %s, Line %s, Column %s, Lexeme %s" % (tokenType, lineNumber, columnNumber, value))
+
+			if token.getType() == TokenType.MP_EOF:
+				flag = True
 
 if __name__ == "__main__":
 	main(sys.argv[1:])
