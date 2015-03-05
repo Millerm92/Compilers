@@ -15,64 +15,56 @@ class Scanner:
 		self.scanFile = None
 		self.outputFile = open('output.txt', 'w')
 		self.line = 1
-		self.column = 0
+		self.column = 1
 
 	def openFile(self, inFile):
 		self.scanFile = open(inFile)
 
 	def newLine(self):
 		self.line += 1
-		self.column = 0
+		self.column = 1
 
 	def getNextToken(self):
 		if self.endOfFile is True:
 			return None
 
-		lexeme = ''
 		thisToken = Token.Token(self.line, self.column)
-
-		flag = False
 		nextChar = self.scanFile.read(1)
+		lexeme = ''
+		self.column += 1
+		flag = False
 
 		while not flag:
-			charAfter = self.scanFile.read(1)
-
-			if not nextChar:
-				thisToken.setLexeme("EOF")
-				thisToken.setType(TokenType.MP_EOF)
-				flag = True
-				self.endOfFile = True
-			elif nextChar == ' ':
-				flag = True
+			if nextChar == ' ':
+				self.column += 1
+				return None
 			elif nextChar == '\n':
 				self.newLine()
-				flag = True
+				return None
+			elif not nextChar:
+				thisToken.setLexeme("EOF")
+				thisToken.setLexeme(TokenType.MP_EOF)
+				self.endOfFile = True
+				return thisToken
+			else:
+				lexeme += nextChar
 
-			lexeme = lexeme + nextChar
-			
-			self.column += 1
-			nextChar = charAfter
+			nextChar = self.scanFile.read(1)
+			if nextChar == '\n':
+				self.newLine()
+			else:
+				self.column += 1
 
 			# CHECK SINGLE STRING TOKENS
-			if len(lexeme) <= 3 and lexeme != ' ':
+			if len(lexeme) <= 3:
 				res = self.checkSingleStringTokens(lexeme, thisToken, nextChar)
 				if res is True:
 					return thisToken
 
 			# CHECK RESERVED WORDS
-			if lexeme != ' ':
-				res = self.checkReservedWords(lexeme, thisToken, nextChar)
-				if res is True:
-					return thisToken
-
-		
-
-		if lexeme != ' ':
-			thisToken.setType(TokenType.UNDEFINED)
-			thisToken.setLexeme("UNDEFINED")
-			return thisToken
-
-		return None
+			res = self.checkReservedWords(lexeme, thisToken, nextChar)
+			if res is True:
+				return thisToken
 
 
 	def checkSingleStringTokens(self, inLexeme, inToken, nextChar):
@@ -152,127 +144,129 @@ class Scanner:
 
 	def checkReservedWords(self, inLexeme, inToken, nextChar):
 		literal = inLexeme.lower()
-
-		if literal == 'and' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_AND)
-			return True
-		elif literal == 'begin' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_BEGIN)
-			return True
-		elif literal == 'div' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_DIV)
-			return True
-		elif literal == 'do' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_DO)
-			return True
-		elif literal == 'downto' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_DOWNTO)
-			return True
-		elif literal == 'else' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_ELSE)
-			return True
-		elif literal == 'end' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_END)
-			return True
-		elif literal == 'false' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_FALSE)
-			return True
-		elif literal == 'fixed' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_FIXED)
-			return True
-		elif literal == 'float' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_FLOAT)
-			return True
-		elif literal == 'for' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_FOR)
-			return True
-		elif literal == 'function' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_FUNCTION)
-			return True
-		elif literal == 'if' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_IF)
-			return True
-		elif literal == 'integer' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_INTEGER)
-			return True
-		elif literal == 'mod' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_MOD)
-			return True
-		elif literal == 'not' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_NOT)
-			return True
-		elif literal == 'or' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_OR)
-			return True
-		elif literal == 'procedure' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_PROCEDURE)
-			return True
-		elif literal == 'program' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_PROGRAM)
-			return True
-		elif literal == 'read' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_READ)
-			return True
-		elif literal == 'repeat' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_REPEAT)
-			return True
-		elif literal == 'string' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_STRING)
-			return True
-		elif literal == 'then' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_THEN)
-			return True
-		elif literal == 'true' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_TRUE)
-			return True
-		elif literal == 'to' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_TO)
-			return True
-		elif literal == 'until' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_UNTIL)
-			return True
-		elif literal == 'var' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_VAR)
-			return True
-		elif literal == 'while' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_WHILE)
-			return True
-		elif literal == 'write' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_WRITE)
-			return True
-		elif literal == 'writeln' and nextChar == ' ':
-			inToken.setLexeme(inLexeme)
-			inToken.setType(TokenType.MP_WRITELN)
-			return True
+		if nextChar == ' ' or nextChar == '\n' or not nextChar:
+			if literal == 'and':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_AND)
+				return True
+			elif literal == 'begin':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_BEGIN)
+				return True
+			elif literal == 'div':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_DIV)
+				return True
+			elif literal == 'do':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_DO)
+				return True
+			elif literal == 'downto':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_DOWNTO)
+				return True
+			elif literal == 'else':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_ELSE)
+				return True
+			elif literal == 'end':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_END)
+				return True
+			elif literal == 'false':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_FALSE)
+				return True
+			elif literal == 'fixed':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_FIXED)
+				return True
+			elif literal == 'float':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_FLOAT)
+				return True
+			elif literal == 'for':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_FOR)
+				return True
+			elif literal == 'function':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_FUNCTION)
+				return True
+			elif literal == 'if':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_IF)
+				return True
+			elif literal == 'integer':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_INTEGER)
+				return True
+			elif literal == 'mod':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_MOD)
+				return True
+			elif literal == 'not':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_NOT)
+				return True
+			elif literal == 'or':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_OR)
+				return True
+			elif literal == 'procedure':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_PROCEDURE)
+				return True
+			elif literal == 'program':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_PROGRAM)
+				return True
+			elif literal == 'read':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_READ)
+				return True
+			elif literal == 'repeat':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_REPEAT)
+				return True
+			elif literal == 'string':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_STRING)
+				return True
+			elif literal == 'then':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_THEN)
+				return True
+			elif literal == 'true':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_TRUE)
+				return True
+			elif literal == 'to':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_TO)
+				return True
+			elif literal == 'until':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_UNTIL)
+				return True
+			elif literal == 'var':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_VAR)
+				return True
+			elif literal == 'while':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_WHILE)
+				return True
+			elif literal == 'write':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_WRITE)
+				return True
+			elif literal == 'writeln':
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_WRITELN)
+				return True
+			else:
+				return False
 		else:
 			return False
 		

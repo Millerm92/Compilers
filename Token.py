@@ -6,7 +6,6 @@ class Token:
 	lineNumber = None
 	columnNumber = None
 	lexeme = None
-	lexemeNumber = None
 	data = None
 	tokenType = None
 
