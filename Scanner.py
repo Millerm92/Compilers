@@ -1,4 +1,9 @@
 # Scanner
+
+# TODO:
+# FIXED_LIT, ERROR
+
+
 import Token, Lexeme
 from TokenType import TokenType
 
@@ -9,6 +14,7 @@ class Scanner:
 	line = None
 	column = None
 
+	state = 0
 	endOfFile = False
 
 	def __init__ (self):
@@ -27,33 +33,45 @@ class Scanner:
 	def getNextToken(self):
 		if self.endOfFile is True:
 			return None
+		self.state = 0
+		
+		nextChar = self.scanFile.read(1)
+		self.column += 1
+		lexeme = ''
+
 
 		thisToken = Token.Token(self.line, self.column)
-		nextChar = self.scanFile.read(1)
-		lexeme = ''
-		self.column += 1
 		flag = False
 
 		while not flag:
+			fsaStatus = self.FSA(lexeme, thisToken, nextChar)
+
 			if nextChar == ' ':
 				self.column += 1
-				return None
+				if fsaStatus is True:
+					return thisToken
+				elif self.state != 4 and self.state != 3:
+					return None
+				else: 
+					lexeme += nextChar
 			elif nextChar == '\n':
 				self.newLine()
-				return None
+				if fsaStatus is True:
+					return thisToken
+				else :
+					return None
 			elif not nextChar:
-				thisToken.setLexeme("EOF")
-				thisToken.setLexeme(TokenType.MP_EOF)
-				self.endOfFile = True
-				return thisToken
+				if fsaStatus is True:
+					return thisToken
+				else:
+					thisToken.setLexeme("EOF")
+					thisToken.setType(TokenType.MP_EOF)
+					self.endOfFile = True
+					return thisToken
 			else:
 				lexeme += nextChar
 
 			nextChar = self.scanFile.read(1)
-			if nextChar == '\n':
-				self.newLine()
-			else:
-				self.column += 1
 
 			# CHECK SINGLE STRING TOKENS
 			if len(lexeme) <= 3:
@@ -65,6 +83,77 @@ class Scanner:
 			res = self.checkReservedWords(lexeme, thisToken, nextChar)
 			if res is True:
 				return thisToken
+
+	def FSA(self, inLexeme, inToken, inNextChar):
+		nextChar = inNextChar.lower()
+
+		# BASE CASE
+		if self.state == 0:
+			if nextChar.isalpha() or nextChar is "_":
+				self.state = 1
+			elif nextChar.isdigit():
+				self.state = 2
+			elif nextChar == '"':
+				self.state = 3
+			elif nextChar == '#':
+				self.state = 4
+
+		# IDENTIFIERS
+		elif self.state == 1:
+			if nextChar == ' ' or nextChar == '\n' or not nextChar:
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_IDENTIFIER)
+				return True
+			elif not (nextChar.isdigit() or nextChar.isalpha()):
+				self.state = -1
+
+		# MATHEMATICAL LITERALS
+		# Integer
+		elif self.state == 2:
+			if nextChar == ' ' or nextChar == '\n' or not nextChar:
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_INTEGER_LIT)
+				return True
+			elif nextChar == '.':
+				self.state = 5
+			elif not nextChar.isdigit():
+				self.state = -1
+		# float
+		elif self.state == 5:
+			if nextChar == ' ' or nextChar == '\n' or not nextChar:
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_FLOAT_LIT)
+				return True
+			elif not nextChar.isdigit():
+				self.state = -1
+
+		# STRINGS
+		elif self.state == 3:
+			if nextChar == '"':
+				self.state = 6
+			elif nextChar == '\n' or not nextChar:
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_RUN_STRING)
+				return True
+		elif self.state == 6:
+			if nextChar == "\n" or not nextChar:
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_STRING_LIT)
+				return True
+			else:
+				self.state = -1
+
+		# COMMENTS
+		elif self.state == 4:
+			if nextChar == "\n" or nextChar == '#' or not nextChar:
+				inToken.setLexeme(inLexeme)
+				inToken.setType(TokenType.MP_RUN_COMMENT)
+				return True
+
+
+
+		return False
+
 
 
 	def checkSingleStringTokens(self, inLexeme, inToken, nextChar):
@@ -144,6 +233,7 @@ class Scanner:
 
 	def checkReservedWords(self, inLexeme, inToken, nextChar):
 		literal = inLexeme.lower()
+
 		if nextChar == ' ' or nextChar == '\n' or not nextChar:
 			if literal == 'and':
 				inToken.setLexeme(inLexeme)

@@ -13,3 +13,20 @@ while write writeln
 := : , =
 /><=()
 - != . + ; *
+
+int string char 
+float fixed
+
+_mark1 _ted
+x y z
+mark2
+whileMark
+
+3.2 9 29
+49 0.001
+
+"Hello"
+"World
+
+#Hello
+#     World

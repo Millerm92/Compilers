@@ -12,16 +12,17 @@ def main(argv):
 	while flag is False:
 		token = scanner.getNextToken()
 
-		if token is not None:
-			tokenType = token.getType()
-           	lineNumber = token.getLineNumber()
-           	columnNumber = token.getColumnNumber()
-           	lexeme = token.getLexeme().getValue()
+		if token != None:
 
-	       	print('Token: %s, Line %s, Column %s, Lexeme "%s"' % (tokenType, lineNumber, columnNumber, lexeme))
-	       	
-	       	if token.getType() == TokenType.MP_EOF:
-	       		flag = True
+			tokenType = token.getType()
+			lineNumber = token.getLineNumber()
+			columnNumber = token.getColumnNumber()
+			lexeme = token.getLexeme().getValue()
+
+			print('Token: %s, Line %s, Column %s, Lexeme "%s"' % (tokenType, lineNumber, columnNumber, lexeme))
+
+			if token.getType() == TokenType.MP_EOF:
+				flag = True
 
 
 if __name__ == "__main__":
