@@ -51,7 +51,7 @@ class Scanner:
 				if fsaStatus is True:
 					return thisToken
 				elif self.state != 4 and self.state != 3:
-					return None
+					return self.getNextToken()
 				else: 
 					lexeme += nextChar
 			elif nextChar == '\n':
@@ -59,7 +59,7 @@ class Scanner:
 				if fsaStatus is True:
 					return thisToken
 				else :
-					return None
+					return self.getNextToken()
 			elif not nextChar:
 				if fsaStatus is True:
 					return thisToken

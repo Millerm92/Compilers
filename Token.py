@@ -33,3 +33,5 @@ class Token:
 	def getColumnNumber(self):
 		return(self.columnNumber)
 		
+	def printToken(self):
+		print(self.lexeme.getValue(), self.lineNumber, self.columnNumber, self.tokenType)
