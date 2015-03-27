@@ -2,6 +2,8 @@
 
 # TODO:
 # FIXED_LIT, ERROR
+# NEQ
+# FIX COMMENTS
 
 
 import Token, Lexeme
@@ -95,7 +97,7 @@ class Scanner:
 				self.state = 2
 			elif nextChar == '"':
 				self.state = 3
-			elif nextChar == '#':
+			elif nextChar == '{':
 				self.state = 4
 
 		# IDENTIFIERS
@@ -145,13 +147,11 @@ class Scanner:
 
 		# COMMENTS
 		elif self.state == 4:
-			if nextChar == "\n" or nextChar == '#' or not nextChar:
+			if nextChar == '}' or not nextChar:
 				inToken.setLexeme(inLexeme)
 				inToken.setType(TokenType.MP_RUN_COMMENT)
 				return True
-
-
-
+				
 		return False
 
 

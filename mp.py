@@ -14,12 +14,15 @@ def main(argv):
 
 	while flag is False:
 		token = scanner.getNextToken()
-		parser.addToken(token)
+
+		if (token.getType() != TokenType.MP_RUN_COMMENT):
+			parser.addToken(token)
 
 		if token.getType() == TokenType.MP_EOF:
 			flag = True
 
 	parser.printTokens()
+	parser.checkGrammar()
 
 
 if __name__ == "__main__":
