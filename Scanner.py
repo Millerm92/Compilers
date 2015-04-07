@@ -223,8 +223,6 @@ class Scanner:
 					lexeme += nextChar
 
 
-
-
 			nextChar = self.scanFile.read(1)
 			self.column += 1
 
