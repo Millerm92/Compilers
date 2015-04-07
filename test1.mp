@@ -1,21 +1,15 @@
-
-
-
-
-
-{
-  I tried to include everything we need to parse for the B level parser.
-  
-  May have missed a couple things.
-}
-
-
 program Test1;
+
+{One Line Comment}
 
 var
   answer, iterator, input, i: integer;  
   yes, no: boolean;
   randomstring:string;
+
+{ 
+  Multiple Line Comment
+}
 
 const 
   x = 10;
@@ -43,8 +37,7 @@ randomstring := '1,3;:"fj309hga ; \\[\;;=-92.-%$@&(@*!          ';
   answer := x div y;
   write('answer: ');
   writeln(answer);     
-  
-  {RANDOM COMMENTS TO MAKE SURE WE IGNORE THEM}       
+       
   
   if(x > y) then begin
     repeat        
@@ -63,8 +56,6 @@ randomstring := '1,3;:"fj309hga ; \\[\;;=-92.-%$@&(@*!          ';
     end;
   end;  
            
-  {RANDOM COMMENTS TO MAKE SURE WE IGNORE THEM}       
-  
   if(not(no) and (yes) and (x = 10)) then begin
     writeln('no yes 10');
   end;
@@ -76,29 +67,6 @@ randomstring := '1,3;:"fj309hga ; \\[\;;=-92.-%$@&(@*!          ';
   if((x > 2) or (y < 100)) then begin
     writeln('x > 2 y < 100');
   end;          
-  
-  
-  {RANDOM COMMENTS TO MAKE SURE WE IGNORE THEM      
-  {MORE TROLL COMMENTS      {{{{}
-  {
-
-
-  3289u4p351928 h;ijtija'rkf
-  p[gk
-  ogawpotj'54t 3]qw90-94]-0u983u65[q[oisjf;osrghs;kughregj
-  ]\=]435]-45=20
-  [paoj;ajffhdlff8f9q234p9fh4pqhu;fh uluh;ofo4u34892908259
-  p8567y29348674856uyioughlisuhglsjkfghkafdj;lk
-                                                    
-  
-  
-  
-  
-  
-  
-  
-  }
-  
   
   writeln(randomString);    
   

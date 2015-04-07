@@ -103,28 +103,21 @@ class Parser:
 			self.error()
 		return
 
-	# HERE
 	def type(self):
-		l = [TokenType.MP_TRUE, TokenType.MP_FALSE, TokenType.MP_FLOAT, TokenType.MP_INTEGER]
-		# HERE HERE HERE HERE mp_boolean vs. mp_true & mp_false?
 		# boolean - 13
-		if(self.lookAhead.getType() == TokenType.MP_TRUE):
-			self.match(TokenType.MP_TRUE)
-		# boolean - 13
-		elif(self.lookAhead.getType() == TokenType.MP_FALSE):
-			self.match(TokenType.MP_FALSE)
+		if(self.lookAhead.getType() == TokenType.MP_BOOLEAN):
+			self.match(TokenType.MP_BOOLEAN)
 		# float - 11
 		elif(self.lookAhead.getType() == TokenType.MP_FLOAT):
 			self.match(TokenType.MP_FLOAT)
 		# integer = 10
 		elif(self.lookAhead.getType() == TokenType.MP_INTEGER):
 			self.match(TokenType.MP_INTEGER)
-		# HERE HERE HERE HERE do i match string_lit or just string?
 		# string_lit - 12
-		elif(self.lookAhead.getType() == TokenType.MP_STRING_LIT):
-			self.match(TokenType.MP_STRING_LIT)
+		elif(self.lookAhead.getType() == TokenType.MP_STRING):
+			self.match(TokenType.MP_STRING)
 		else:
-			self.error(l)
+			self.error()
 		return
 
 	def procedureAndFunctionDeclarationPart(self):
@@ -355,7 +348,8 @@ class Parser:
 		# id - 38,43
 		elif (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
 			self.assignmentStatement()
-			self.procedureStatement()
+			
+			#self.procedureStatement()
 			return
 		else:
 			self.error()
@@ -459,9 +453,9 @@ class Parser:
 			self.match(TokenType.MP_ASSIGN)
 			self.expression()
 
-			self.functionIdentifier()
-			self.match(TokenType.MP_ASSIGN)
-			self.expression()
+#			self.functionIdentifier()
+#			self.match(TokenType.MP_ASSIGN)
+#			self.expression()
 			return
 		else:
 			self.error()
@@ -487,6 +481,8 @@ class Parser:
 		if (self.lookAhead.getType() == TokenType):
 			self.match(TokenType.MP_ELSE)
 			self.statement()
+
+			# return
 			return
 		# end, until, ; - 58
 		elif (self.lookAhead.getType() in l1 ):
@@ -824,7 +820,7 @@ class Parser:
 			self.functionIdentifier()
 			self.optionalActualParameterList()
 
-			self.variableIdentifier()
+			#self.variableIdentifier()
 			return
 		# HERE HERE HERE HERE
 		# int_lit - 99
@@ -936,7 +932,7 @@ class Parser:
 			self.p = self.p + 1
 			self.lookAhead =  self.tokens[self.p]
 		else:
-			self.rror(tokenType)
+			self.error()
 
 	def error(self):
 		t = self.lookAhead

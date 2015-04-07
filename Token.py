@@ -1,4 +1,3 @@
-# token
 import Lexeme
 from TokenType import TokenType
 
@@ -10,19 +9,14 @@ class Token:
 	tokenType = None
 
 
-	def __init__(self, inLineNum, inColumnNum):
+	def __init__(self, inLexeme, inLineNum, inColumnNum, inTokenType):
+		self.lexeme = Lexeme.Lexeme(inLexeme)
 		self.lineNumber = inLineNum
 		self.columnNumber = inColumnNum
-
-	def setType(self, inTokenType):
 		self.tokenType = inTokenType
 
 	def getType(self):
 		return(self.tokenType)
-
-	def setLexeme(self, inValue):
-		thisLexeme = Lexeme.Lexeme(inValue)
-		self.lexeme = thisLexeme
 
 	def getLexeme(self):
 		return(self.lexeme)
