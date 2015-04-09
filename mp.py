@@ -1,6 +1,6 @@
 # Parser
 import sys
-import Lexeme, Token, Scanner, Parser
+import Token, Scanner, Parser
 from TokenType import TokenType
 
 def main(argv):

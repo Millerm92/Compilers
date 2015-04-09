@@ -6,7 +6,7 @@
 # FIX COMMENTS
 
 
-import Token, Lexeme
+import Token
 from TokenType import TokenType
 
 class Scanner:

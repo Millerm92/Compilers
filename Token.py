@@ -8,6 +8,8 @@ class Token:
 	data = None
 	tokenType = None
 
+	semanticRecord = None
+
 
 	def __init__(self, inLexeme, inLineNum, inColumnNum, inTokenType):
 		self.lexeme = Lexeme.Lexeme(inLexeme)

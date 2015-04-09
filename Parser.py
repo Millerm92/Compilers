@@ -1,6 +1,5 @@
 # PARSER
-import sys
-import Lexeme, Token, Scanner
+import Token
 from TokenType import TokenType
 
 class Parser:
