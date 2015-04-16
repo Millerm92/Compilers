@@ -1,26 +1,61 @@
 # Symbol Table
 
+
 class SymbolTable:
-	name
-	scope
+    name = ""
+    nestLevel = 0
+    label = 0
 
-	kind
-	type
+    tuples = []
+    parent = None
 
+    def __init__(self, inName, inLabel, inParent):
+        self.name = inName
+        self.label = inLabel
+        self.parent = inParent
 
-	def __init__ (self, inName, inScope):
-		self.name = inNamen
-		scope = inScope
-		values = {}
+        self.tuples = []
 
-	def insert(self):
-		return
+    def insert(self, inSymbol):
+        self.tuples.append(inSymbol)
 
-	def lookup(self):
-		return
+    def getTuples(self):
+        return self.tuples
 
-	def getAttributes(self):
-		return
+    def getNumTuples(self):
+        return len(self.tuples)
 
+    def getLabel(self):
+        return self.label
 
+    def setParent(self, inParent):
+        self.parent = inParent
 
+    def getParent(self):
+        return self.parent
+
+    def getOffset(self, inLexeme):
+        for s in self.tuples:
+            if (s.getLexeme() == inLexeme):
+                ret = [s.getOffset, self.nestLevel]
+                return ret
+
+    def getType(self, inLexeme):
+        for s in self.tuples:
+            if (s.getLexeme() == inLexeme):
+                return s.getType()
+
+    def getKind(self, inLexeme):
+        for s in self.tuples:
+            if (s.getLexeme() == inLexeme):
+                return s.getKind()
+
+    def getSymbol(self, inLexeme):
+        for s in self.tuples:
+            if (s.getLexeme() == inLexeme):
+                return s
+
+    def printSymbolTable(self):
+        print("\n%s, %d" % (self.name, self.nestLevel))
+        for t in self.tuples:
+            t.printSymbol()

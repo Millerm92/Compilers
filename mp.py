@@ -4,22 +4,24 @@ import Token, Scanner, Parser
 from TokenType import TokenType
 
 def main(argv):
+    scanner = Scanner.Scanner()
+    scanner.openFile(argv[0])
 
-	scanner = Scanner.Scanner()
-	scanner.openFile(argv[0])
+    parser = Parser.Parser()
+    flag = False
 
-	#parser = Parser.Parser()
+    while flag is False:
+        token = scanner.getNextToken()
+        if token is not None:
+            if token.getType() == TokenType.MP_EOF:
+                flag = True
 
-	flag = False
+            if not (token.getType() == TokenType.MP_RUN_COMMENT or token.getType() == TokenType.MP_ERROR):
+                parser.addToken(token)
+        else:
+            flag = True
 
-	while flag is False:
-		token = scanner.getNextToken()
-		if token is not None:
-			token.printToken()
-			if token.getType() == TokenType.MP_EOF:
-				flag = True 
-		else: 
-			flag = True
+    parser.checkGrammar()
 
 if __name__ == "__main__":
-	main(sys.argv[1:])
+    main(sys.argv[1:])
