@@ -53,9 +53,11 @@ class Parser:
 
         self.lookAhead = self.tokens[self.p]
         self.systemGoal()
+        self.semanticAnalyzer.write("HLT\n")
         return
 
-    def systemGoal(self):# program - 1
+    def systemGoal(self):
+    # program - 1
         if (self.lookAhead.getType() == TokenType.MP_PROGRAM):
             self.program()
             self.match(TokenType.MP_EOF)
@@ -85,7 +87,11 @@ class Parser:
 
             self.programIdentifier()
 
-            # HERE INSERT SEMANTICS
+            # HERE
+            self.semanticAnalyzer.write("PUSH D0\n")
+            self.semanticAnalyzer.write("MOV SP D0\n")
+            self.semanticAnalyzer.write("BR L0\n")
+
         else:
             self.error()
         return
@@ -514,7 +520,7 @@ class Parser:
         # id - 48
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             # HERE
-            self.semanticAnalyzer.readStatement(self.tokens[self.p].getLexeme(), self.curTable)
+            #self.semanticAnalyzer.readStatement(self.tokens[self.p].getLexeme(), self.curTable)
             self.variableIdentifier()
             return
         else:
@@ -569,7 +575,7 @@ class Parser:
             # MISSING?
             self.ordinalExpression()
             # HERE
-            self.semanticAnalyzer.writeStatement(inWriteLine)
+            #self.semanticAnalyzer.writeStatement(inWriteLine)
             return
         else:
             self.error()
@@ -1088,6 +1094,6 @@ class Parser:
         else:
             self.error()
 
-    def error(self):
+    def error(self, li):
         t = self.lookAhead
         print("Error at line %s, column %s: found %s" % (t.getLineNumber(), t.getColumnNumber(), t.getType()))

@@ -19,6 +19,9 @@ class SymbolTable:
     def insert(self, inSymbol):
         self.tuples.append(inSymbol)
 
+    def getName(self):
+        return self.name
+
     def getTuples(self):
         return self.tuples
 

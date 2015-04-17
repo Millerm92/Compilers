@@ -253,12 +253,12 @@ class Scanner:
             tType = TokenType.MP_LEQUAL
         elif literal == "(":
             tType = TokenType.MP_LPAREN
-        elif literal == "<":
-            tType = TokenType.MP_LTHAN
         elif literal == "-":
             tType = TokenType.MP_MINUS
         elif literal == "<" and nextChar == '>':
             tType = TokenType.MP_NEQUAL
+        elif literal == "<":
+            tType = TokenType.MP_LTHAN
         elif literal == ".":
             tType = TokenType.MP_PERIOD
         elif literal == "+":
@@ -279,6 +279,8 @@ class Scanner:
             tType = TokenType.MP_AND
         elif literal == 'begin':
             tType = TokenType.MP_BEGIN
+        elif literal == 'boolean':
+            tType = TokenType.MP_BOOLEAN
         elif literal == 'div':
             tType = TokenType.MP_DIV
         elif literal == 'do':
