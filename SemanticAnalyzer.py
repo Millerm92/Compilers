@@ -42,7 +42,7 @@ class SemanticAnalyzer:
         else:
             print("Assignment of conflicting types")
 
-        self.outputFile.write("POP %dD(0)\n" % offset)
+        self.outputFile.write("POP %d(D0)\n" % offset)
 
     def expression(self, term1, term2, operator):
         if(term1 == "MP_FIXED"):

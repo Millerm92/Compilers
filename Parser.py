@@ -891,7 +891,7 @@ class Parser:
         # + - 88
         elif (self.lookAhead.getType() == TokenType.MP_PLUS):
             self.match(TokenType.MP_PLUS)
-            return " SUBS"
+            return "SUBS"
         # '-' - 89
         elif (self.lookAhead.getType() == TokenType.MP_MINUS):
             self.match(TokenType.MP_MINUS)
