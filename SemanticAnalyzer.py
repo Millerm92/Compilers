@@ -27,6 +27,23 @@ class SemanticAnalyzer:
     def pushLitToStack(self, inLit):
         self.outputFile.write("PUSH #%s\n" % str(inLit))
 
+    def assignment(self, res, expType, offset):
+        if res == "MP_FIXED":
+            res = "MP_FLOAT"
+        if expType == "MP_FIXED":
+            expType = "MP_FLOAT"
+
+        if res == expType:
+            pass
+        elif res == "MP_FLOAT" and expType == "MP_INTEGER":
+            self.outputFile.write("CASTSF\n")
+        elif res == "MP_INTEGER" and expType == "MP_FLOAT":
+            self.outputFile.write("CASTSI\n")
+        else:
+            print("Assignment of conflicting types")
+
+        self.outputFile.write("POP %dD(0)\n" % offset)
+
     def expression(self, term1, term2, operator):
         if(term1 == "MP_FIXED"):
             term1 = "MP_FLOAT"

@@ -565,15 +565,18 @@ class Parser:
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
 
             # HERE
-            thisToken = self.tokens[self.p + 1]
+            thisToken = self.tokens[self.p]
             _type = self.curTable.getType(thisToken.getLexeme())
+            self.curTable.printSymbolTable()
+            print(thisToken.getLexeme())
             offset = self.curTable.getOffset(thisToken.getLexeme())
-
-            # TRY
 
             self.variableIdentifier()
             self.match(TokenType.MP_ASSIGN)
-            self.expression()
+
+            exprType = self.expression()
+
+            self.semanticAnalyzer.assignment(_type, exprType, offset)
 
 #            self.functionIdentifier()
 #            self.match(TokenType.MP_ASSIGN)
@@ -763,9 +766,13 @@ class Parser:
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 73
         if (self.lookAhead.getType() in l1):
-            self.simpleExpression()
-            self.optionalRelationalPart()
-            return
+            _type = self.simpleExpression()
+            boolCheck = self.optionalRelationalPart()
+            if (boolCheck):
+                return "MP_BOOLEAN"
+            else:
+                return _type
+            return _type
         else:
             self.error()
         return
@@ -824,6 +831,11 @@ class Parser:
         if (self.lookAhead.getType() in l1):
             sign = self.optionalSign()
             term1 = self.term()
+
+            if (sign):
+                self.semanticAnalyzer.pushLitToStack("-1")
+                self.semanticAnalyzer.expression(term1, "MP_INTEGER", "MULS")
+
             self.termTail(term1)
             return
         else:
