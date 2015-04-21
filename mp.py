@@ -1,4 +1,3 @@
-# Parser
 import sys
 import Token, Scanner, Parser
 from TokenType import TokenType

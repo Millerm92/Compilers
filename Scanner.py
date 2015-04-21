@@ -1,11 +1,4 @@
 # Scanner
-
-# TODO:
-# FIXED_LIT, ERROR
-# NEQ
-# FIX COMMENTS
-
-
 import Token
 from TokenType import TokenType
 

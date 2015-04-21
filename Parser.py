@@ -57,6 +57,7 @@ class Parser:
         return
 
     def systemGoal(self):
+        print("System Goal")
     # program - 1
         if (self.lookAhead.getType() == TokenType.MP_PROGRAM):
             self.program()
@@ -66,6 +67,7 @@ class Parser:
         return
 
     def program(self):
+        print("Program")
         # program - 2
         if (self.lookAhead.getType() == TokenType.MP_PROGRAM):
             self.programHeading()
@@ -77,6 +79,7 @@ class Parser:
         return
 
     def programHeading(self):
+        print("Program Heading")
         # program - 3
         if (self.lookAhead.getType() == TokenType.MP_PROGRAM):
             self.match(TokenType.MP_PROGRAM)
@@ -90,13 +93,13 @@ class Parser:
             # HERE
             self.semanticAnalyzer.write("PUSH D0\n")
             self.semanticAnalyzer.write("MOV SP D0\n")
-            self.semanticAnalyzer.write("BR L0\n")
 
         else:
             self.error()
         return
 
     def block(self, inBool):
+        print("Block")
         l1 = [TokenType.MP_BEGIN, TokenType.MP_FUNCTION, TokenType.MP_PROCEDURE, TokenType.MP_VAR]
         # begin, function, procedure, var - 4
         if (self.lookAhead.getType() in l1):
@@ -104,6 +107,7 @@ class Parser:
             self.procedureAndFunctionDeclarationPart()
 
             # HERE INSERT SEMANTICS
+            self.semanticAnalyzer.blockDec(len(self.curTable.getTuples()))
 
             self.statementPart()
 
@@ -116,13 +120,11 @@ class Parser:
         return
 
     def variableDeclarationPart(self):
+        print("Variable Declaration Part")
         l1 = [TokenType.MP_BEGIN, TokenType.MP_FUNCTION, TokenType.MP_PROCEDURE]
         # var - 5
         if (self.lookAhead.getType() == TokenType.MP_VAR):
-            # HERE
             self.idenKind = "var"
-            self.idenMode = "copy"
-
             self.match(TokenType.MP_VAR)
             self.variableDeclaration()
             self.match(TokenType.MP_SCOLON)
@@ -136,6 +138,7 @@ class Parser:
         return
 
     def variableDeclarationTail(self):
+        print("Variable Declaration Tail")
         l1 = [TokenType.MP_BEGIN, TokenType.MP_FUNCTION, TokenType.MP_PROCEDURE]
         # id - 7
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
@@ -150,6 +153,7 @@ class Parser:
         return
 
     def variableDeclaration(self):
+        print("Variable Declaration")
         # id - 9
         if(self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             # HERE - save current index of already completed tuples,
@@ -171,6 +175,7 @@ class Parser:
         return
 
     def type(self):
+        print("Type")
         # boolean - 13
         if(self.lookAhead.getType() == TokenType.MP_BOOLEAN):
             self.match(TokenType.MP_BOOLEAN)
@@ -188,6 +193,7 @@ class Parser:
         return
 
     def procedureAndFunctionDeclarationPart(self):
+        print("Procedure and Function Declaration Part")
         # begin -16
         if (self.lookAhead.getType() == TokenType.MP_BEGIN):
             return
@@ -206,6 +212,7 @@ class Parser:
         return
 
     def procedureDeclaration(self):
+        print("Proceure Declaration")
         # procedure 17
         if (self.lookAhead.getType() == TokenType.MP_PROCEDURE):
             self.procedureHeading()
@@ -218,6 +225,7 @@ class Parser:
         return
 
     def functionDeclaration(self):
+        print("Function Declaration")
         # function 18
         if (self.lookAhead.getType() == TokenType.MP_FUNCTION):
             self.functionHeading()
@@ -230,57 +238,26 @@ class Parser:
         return
 
     def procedureHeading(self):
+        print("Procedure Heading")
         # procedure - 19
         if (self.lookAhead.getType() == TokenType.MP_PROCEDURE):
             self.match(TokenType.MP_PROCEDURE)
-
-            # HERE
-            self.idenName = self.tokens[self.p].getLexeme()
-            self.label += 1
-            self.curTable = SymbolTable.SymbolTable(self.idenName, self.label, self.curTable)
-
             self.procedureIdentifier()
-
-            # HERE
-            self.listOfParams = []
-
             self.optionalFormalParameterList()
-
-            # HERE
-            aSymbol = Symbol.Symbol(self.idenName, None, TokenType.MP_PROCEDURE, None, self.curTable.getLabel())
-            self.curTable.getParent.insert(aSymbol)
-
             return
         else:
             self.error()
         return
 
     def functionHeading(self):
+        print("Function Heading")
         # function - 20
         if (self.lookAhead.getType() == TokenType.MP_FUNCTION):
             self.match(TokenType.MP_FUNCTION)
-
-            # HERE
-            self.idenName = self.tokens[self.p].getLexeme()
-            self.label += 1
-            self.curTable = SymbolTable.SymbolTable(self.idenName, self.label, self.curTable)
-
             self.functionIdentifier()
-
-            # HERE
-            self.listOfParams = []
-
             self.optionalFormalParameterList()
             self.match(TokenType.MP_COLON)
-
-            # HERE
-            self.idenType = self.lookAhead.getType()
-
             self.type()
-
-            # HERE
-            aSymbol = Symbol.Symbol(self.idenName, None, TokenType.MP_FUNCTION, None, self.curTable.getLabel())
-            self.curTable.getParent.insert(aSymbol)
 
             return
         else:
@@ -288,6 +265,7 @@ class Parser:
         return
 
     def optionalFormalParameterList(self):
+        print("OPtional Formal Parameter List")
         # ; - 22
         if (self.lookAhead.getType() == TokenType.MP_SCOLON):
             return
@@ -306,6 +284,7 @@ class Parser:
         return
 
     def formalParameterSectionTail(self):
+        print("Formal Parameter Section Tail")
         # ; - 23
         if (self.lookAhead.getType() == TokenType.MP_SCOLON):
             self.match(TokenType.MP_SCOLON)
@@ -320,6 +299,7 @@ class Parser:
         return
 
     def formalParameterSection(self):
+        print("Formal Parameter Section")
         # var - 26
         if (self.lookAhead.getType() == TokenType.MP_VAR):
             self.variableParameterSection()
@@ -333,36 +313,19 @@ class Parser:
         return
 
     def valueParameterSection(self):
+        print("Value Parameter Section")
         # id - 27
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
-            # HERE
-            index = len(self.curTable.getTuples())
-            self.idenMode = "copy"
-            self.idenKind = "param"
-
             self.identifierList()
             self.match(TokenType.MP_COLON)
-
-            # HERE
-            self.idenType = self.lookAhead.getType()
-
             self.type()
-
-            # HERE
-            t = self.curTable.getTuples()
-            for i in range(index, len(self.curTable.getTuples())):
-                t[i].setType(self.idenType)
-
-            for i in range(0, len(self.listOfParams)):
-                if self.listOfParams[i].getType is None:
-                    self.listOfParams[i].setType(self.idenType)
-
             return
         else:
             self.error()
         return
 
     def variableParameterSection(self):
+        print("Variable Parameter Section")
         # var - 28
         if (self.lookAhead.getType() == TokenType.MP_VAR):
             self.match(TokenType.MP_VAR)
@@ -375,6 +338,7 @@ class Parser:
         return
 
     def statementPart(self):
+        print("Statement Part")
         # begin - 29
         if (self.lookAhead.getType() == TokenType.MP_BEGIN):
             self.compoundStatement()
@@ -384,6 +348,7 @@ class Parser:
         return
 
     def compoundStatement(self):
+        print("Compound Statement")
         # begin - 30
         if (self.lookAhead.getType() == TokenType.MP_BEGIN):
             self.match(TokenType.MP_BEGIN)
@@ -395,6 +360,7 @@ class Parser:
         return
 
     def statementSequence(self):
+        print("Statement Sequence")
         l1 = [TokenType.MP_BEGIN, TokenType.MP_END, TokenType.MP_FOR, TokenType.MP_IF, TokenType.MP_READ, TokenType.MP_REPEAT]
         l2 = [TokenType.MP_UNTIL, TokenType.MP_WHILE, TokenType.MP_WRITE, TokenType.MP_WRITELN, TokenType.MP_IDENTIFIER, TokenType.MP_SCOLON]
         # begin, end, for, if, read, repeat - 31
@@ -412,6 +378,7 @@ class Parser:
         return
 
     def statementTail(self):
+        print("Statement Tail")
         # HERE: CHANGED MP_END FROM MP_ELSE
         l1 = [TokenType.MP_END, TokenType.MP_UNTIL]
         # end, until - 33
@@ -428,6 +395,7 @@ class Parser:
         return
 
     def statement(self):
+        print("Statement")
         l1 = [TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_UNTIL, TokenType.MP_SCOLON]
         l2 = [TokenType.MP_WRITE, TokenType.MP_WRITELN]
         # begin - 35
@@ -481,6 +449,7 @@ class Parser:
         return
 
     def emptyStatement(self):
+        print("Empty Statement")
         l1 = [TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_UNTIL, TokenType.MP_SCOLON]
         # else, end, until, ; - 44
         if (self.lookAhead.getType() in l1):
@@ -490,6 +459,7 @@ class Parser:
         return
 
     def readStatement(self):
+        print("Read Statement")
         # read - 45
         if (self.lookAhead.getType() == TokenType.MP_READ):
             self.match(TokenType.MP_READ)
@@ -503,6 +473,7 @@ class Parser:
         return
 
     def readParameterTail(self):
+        print("Read Parameter Tail")
         # ',' - 46
         if (self.lookAhead.getType() == TokenType.MP_COMMA):
             self.match(TokenType.MP_COMMA)
@@ -517,10 +488,11 @@ class Parser:
         return
 
     def readParameter(self):
+        print("Read Parameter")
         # id - 48
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             # HERE
-            #self.semanticAnalyzer.readStatement(self.tokens[self.p].getLexeme(), self.curTable)
+            self.semanticAnalyzer.readStatement(self.tokens[self.p].getLexeme(), self.curTable)
             self.variableIdentifier()
             return
         else:
@@ -528,6 +500,7 @@ class Parser:
         return
 
     def writeStatement(self):
+        print("Write Statement")
         # write - 49
         if (self.lookAhead.getType() == TokenType.MP_WRITE):
             self.match(TokenType.MP_WRITE)
@@ -551,14 +524,15 @@ class Parser:
         return
 
     # HERE
-    def writeParameterTail(self, inWriteLine):
+    def writeParameterTail(self, inLine):
+        print("Write Parameter Tail")
         # ',' - 51
         if (self.lookAhead.getType() == TokenType.MP_COMMA):
             self.match(TokenType.MP_COMMA)
 
             # HERE
-            self.writeParameter(inWriteLine)
-            self.writeParameterTail(inWriteLine)
+            self.writeParameter(inLine)
+            self.writeParameterTail(inLine)
             return
         # ) - 52
         elif (self.lookAhead.getType() == TokenType.MP_RPAREN):
@@ -568,14 +542,15 @@ class Parser:
         return
 
     # HERE
-    def writeParameter(self, inWriteLine):
+    def writeParameter(self, inLine):
+        print("Write Parameter")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 53
         if (self.lookAhead.getType() in l1):
-            # MISSING?
+            # HERE
             self.ordinalExpression()
             # HERE
-            #self.semanticAnalyzer.writeStatement(inWriteLine)
+            self.semanticAnalyzer.writeStatement(inLine)
             return
         else:
             self.error()
@@ -583,6 +558,7 @@ class Parser:
 
     # RESUME
     def assignmentStatement(self):
+        print("Assignment Statement")
         # HERE HERE HERE HERE
         # id - 54, 55
 
@@ -608,6 +584,7 @@ class Parser:
         return
 
     def ifStatement(self):
+        print("If Statement")
         # if - 56
         if (self.lookAhead.getType() == TokenType.MP_IF):
             self.match(TokenType.MP_IF)
@@ -621,6 +598,7 @@ class Parser:
         return
 
     def optionalElsePart(self):
+        print("Optional Else Part")
         l1 = [TokenType.MP_END, TokenType.MP_UNTIL, TokenType.MP_SCOLON]
         # HERE HERE HERE HERE
         # else - 57, 58
@@ -638,6 +616,7 @@ class Parser:
         return
 
     def repeatStatement(self):
+        print("Repeat Statement")
         # repeat - 59
         if (self.lookAhead.getType() == TokenType.MP_REPEAT):
             self.match(TokenType.MP_REPEAT)
@@ -650,6 +629,7 @@ class Parser:
         return
 
     def whileStatement(self):
+        print("While Statement")
         # while - 60
         if (self.lookAhead.getType() == TokenType.MP_WHILE):
             self.match(TokenType.MP_WHILE)
@@ -662,6 +642,7 @@ class Parser:
         return
 
     def forStatement(self):
+        print("For Statement")
         # for - 61
         if (self.lookAhead.getType() == TokenType.MP_FOR):
             self.match(TokenType.MP_FOR)
@@ -678,6 +659,7 @@ class Parser:
         return
 
     def controleVariable(self):
+        print("Controle Variable")
         # id - 62
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             self.variableIdentifier()
@@ -687,6 +669,7 @@ class Parser:
         return
 
     def initialValue(self):
+        print("Initial Value")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 63
         if (self.lookAhead.getType() in l1):
@@ -697,6 +680,7 @@ class Parser:
         return
 
     def stepValue(self):
+        print("Step Value")
         # downto - 65
         if (self.lookAhead.getType() == TokenType.MP_DOWNTO):
             self.match(TokenType.MP_DOWNTO)
@@ -710,6 +694,7 @@ class Parser:
         return
 
     def finalValue(self):
+        print("Final Value")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 66
         if(self.lookAhead.getType() in l1):
@@ -720,6 +705,7 @@ class Parser:
         return
 
     def procedureStatement(self):
+        print("Procedure Statement")
         # id - 67
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             self.procedureIdentifier()
@@ -730,6 +716,7 @@ class Parser:
         return
 
     def optionalActualParameterList(self):
+        print("Optional Actual Parameter List")
         l1 = [TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_UNTIL, TokenType.MP_SCOLON]
         # else, end, until, ; - 69
         if (self.lookAhead.getType() in l1):
@@ -746,6 +733,7 @@ class Parser:
         return
 
     def actualParameterTail(self):
+        print("Actual Parameter Tail")
         # ',' - 70
         if (self.lookAhead.getType() == TokenType.MP_COMMA):
             self.match(TokenType.MP_COMMA)
@@ -760,6 +748,7 @@ class Parser:
         return
 
     def actualParameter(self):
+        print("Actual Parameter")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 72
         if (self.lookAhead.getType() in l1):
@@ -770,6 +759,7 @@ class Parser:
         return
 
     def expression(self):
+        print("Expression")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 73
         if (self.lookAhead.getType() in l1):
@@ -781,6 +771,7 @@ class Parser:
         return
 
     def optionalRelationalPart(self):
+        print("Optional Relational Part")
         # HERE: ADDED RPAREN TO L1
         l1 = [TokenType.MP_DO, TokenType.MP_DOWNTO, TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_THEN, TokenType.MP_TO, TokenType.MP_UNTIL, TokenType.MP_COMMA, TokenType.MP_SCOLON, TokenType.MP_LPAREN, TokenType.MP_RPAREN]
         l2 = [TokenType.MP_EQUAL, TokenType.MP_GTHAN, TokenType.MP_LTHAN, TokenType.MP_LEQUAL, TokenType.MP_GEQUAL, TokenType.MP_NEQUAL]
@@ -797,6 +788,7 @@ class Parser:
         return
 
     def relationalOperator(self):
+        print("Relational Operator")
         # = - 76
         if (self.lookAhead.getType() == TokenType.MP_EQUAL):
             self.match(TokenType.MP_EQUAL)
@@ -826,18 +818,20 @@ class Parser:
         return
 
     def simpleExpression(self):
+        print("Simple Expression")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 82
         if (self.lookAhead.getType() in l1):
-            self.optionalSign()
-            self.term()
-            self.termTail()
+            sign = self.optionalSign()
+            term1 = self.term()
+            self.termTail(term1)
             return
         else:
             self.error()
         return
 
-    def termTail(self):
+    def termTail(self, term1):
+        print("Term Tail")
         l1 = [TokenType.MP_DO, TokenType.MP_DOWNTO, TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_THEN, TokenType.MP_TO, TokenType.MP_UNTIL]
         l2 = [TokenType.MP_COMMA, TokenType.MP_SCOLON, TokenType.MP_RPAREN, TokenType.MP_EQUAL, TokenType.MP_GTHAN, TokenType.MP_LTHAN, TokenType.MP_GEQUAL, TokenType.MP_LEQUAL, TokenType.MP_NEQUAL]
         l3 = [TokenType.MP_OR, TokenType.MP_PLUS, TokenType.MP_MINUS]
@@ -849,15 +843,17 @@ class Parser:
             return
         # or, +, '-' - 83
         elif (self.lookAhead.getType() in l3):
-            self.addingOperator()
-            self.term()
-            self.termTail()
+            operator = self.addingOperator()
+            term2 = self.term()
+            self.semanticAnalyzer.expression(term1, term2, operator)
+            self.termTail(term1)
             return
         else:
             self.error()
         return
 
     def optionalSign(self):
+        print("Optional Sign")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN]
         # false, not, true, id, int_lit, float_lit, string_lit, ( - 87
         if (self.lookAhead.getType() in l1):
@@ -869,48 +865,52 @@ class Parser:
         # '-' - 86
         elif (self.lookAhead.getType() == TokenType.MP_MINUS):
             self.match(TokenType.MP_MINUS)
-            return
+            return True
         else:
             self.error()
-        return
+        return False
 
     def addingOperator(self):
+        print("Adding Operator")
         # or - 90
         if (self.lookAhead.getType() == TokenType.MP_OR):
             self.match(TokenType.MP_OR)
-            return
+            return "ADDS"
         # + - 88
         elif (self.lookAhead.getType() == TokenType.MP_PLUS):
             self.match(TokenType.MP_PLUS)
-            return
+            return " SUBS"
         # '-' - 89
         elif (self.lookAhead.getType() == TokenType.MP_MINUS):
             self.match(TokenType.MP_MINUS)
-            return
+            return "ORS"
         else:
             self.error()
         return
 
     def term(self):
+        print("Term")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN]
         # false, not, true, id, int_lit, float_lit, string_lit, ( - 91
         if (self.lookAhead.getType() in l1):
-            self.factor()
-            self.factorTail()
-            return
+            term1 = self.factor()
+            self.factorTail(term1)
+            return term1
         else:
             self.error()
         return
 
-    def factorTail(self):
+    def factorTail(self, term1Type):
+        print("Factor Tail")
         l1 = [TokenType.MP_AND, TokenType.MP_DIV, TokenType.MP_MOD, TokenType.MP_TIMES, TokenType.MP_FLOAT_DIVIDE]
         l2 = [TokenType.MP_DO, TokenType.MP_DOWNTO, TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_OR, TokenType.MP_THEN, TokenType.MP_TO, TokenType.MP_UNTIL]
         l3 = [TokenType.MP_COMMA, TokenType.MP_SCOLON, TokenType.MP_RPAREN, TokenType.MP_EQUAL, TokenType.MP_GTHAN, TokenType.MP_LTHAN, TokenType.MP_GEQUAL, TokenType.MP_LEQUAL, TokenType.MP_NEQUAL, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # and, div, mod, *, / - 92
         if (self.lookAhead.getType() in l1):
-            self.multiplyingOperator()
-            self.factor()
-            self.factorTail()
+            operator = self.multiplyingOperator()
+            term2Type = self.factor()
+            self.semanticAnalyzer.expression(term1Type, term2Type, operator)
+            self.factorTail(term1Type)
             return
         # do, downto, else, end, or, then, to, until - 93
         elif (self.lookAhead.getType() in l2):
@@ -923,31 +923,33 @@ class Parser:
         return
 
     def multiplyingOperator(self):
+        print("Multiplying Operator")
         # and - 98
         if (self.lookAhead.getType() == TokenType.MP_AND):
             self.match(TokenType.MP_AND)
-            return
+            return "ANDS"
         # div - 96
         elif (self.lookAhead.getType() == TokenType.MP_DIV):
             self.match(TokenType.MP_DIV)
-            return
+            return "DIVS"
         # mod - 97
         elif (self.lookAhead.getType() == TokenType.MP_MOD):
             self.match(TokenType.MP_MOD)
-            return
+            return "MODS"
         # * - 94
         elif (self.lookAhead.getType() == TokenType.MP_TIMES):
             self.match(TokenType.MP_TIMES)
-            return
+            return "MULS"
         # / - 95
         elif (self.lookAhead.getType() == TokenType.MP_FLOAT_DIVIDE):
             self.match(TokenType.MP_FLOAT_DIVIDE)
-            return
+            return "DIVSF"
         else:
             self.error()
         return
 
     def factor(self):
+        print("Factor")
         # false - 103
         if (self.lookAhead.getType() == TokenType.MP_FALSE):
             self.match(TokenType.MP_FALSE)
@@ -966,21 +968,24 @@ class Parser:
         elif (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             #self.functionIdentifier()
             #self.optionalActualParameterList()
+            self.semanticAnalyzer.pushToStack(self.tokens[self.p].getLexeme(), self.curTable)
 
             self.variableIdentifier()
             return
-        # HERE HERE HERE HERE
         # int_lit - 99
         elif (self.lookAhead.getType() == TokenType.MP_INTEGER_LIT):
+            self.semanticAnalyzer.pushLitToStack(self.tokens[self.p].getLexeme())
+
             self.match(TokenType.MP_INTEGER_LIT)
             return
-        # HERE HERE HERE HERE
         # float_lit - 100
         elif (self.lookAhead.getType() == TokenType.MP_FLOAT_LIT):
+            self.semanticAnalyzer.pushLitToStack(self.tokens[self.p].getLexeme())
             self.match(Token.MP_FLOAT_LIT)
             return
         # string_lit - 101
         elif (self.lookAhead.getType() == TokenType.MP_STRING_LIT):
+            self.semanticAnalyzer.pushLitToStack(self.tokens[self.p].getLexeme())
             self.match(TokenType.MP_STRING_LIT)
             return
         # ( - 105
@@ -994,6 +999,7 @@ class Parser:
         return
 
     def programIdentifier(self):
+        print("Program Identifier")
         # id - 107
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             self.match(TokenType.MP_IDENTIFIER)
@@ -1003,6 +1009,7 @@ class Parser:
         return
 
     def variableIdentifier(self):
+        print("Variable Identifier")
         # id - 108
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             self.match(TokenType.MP_IDENTIFIER)
@@ -1012,6 +1019,7 @@ class Parser:
         return
 
     def procedureIdentifier(self):
+        print("Procedure Identifier")
         # id - 109
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             self.match(TokenType.MP_IDENTIFIER)
@@ -1021,6 +1029,7 @@ class Parser:
         return
 
     def functionIdentifier(self):
+        print("Function Identifier")
         # id - 110
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             self.match(TokenType.MP_IDENTIFIER)
@@ -1030,6 +1039,7 @@ class Parser:
         return
 
     def booleanExpression(self):
+        print("Boolean Expression")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 111
         if (self.lookAhead.getType() in l1):
@@ -1040,6 +1050,7 @@ class Parser:
         return
 
     def ordinalExpression(self):
+        print("Ordinal Expression")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 112
         if (self.lookAhead.getType() in l1):
@@ -1050,6 +1061,7 @@ class Parser:
         return
 
     def identifierList(self):
+        print("Identifier List")
         # id - 113
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
 
@@ -1066,6 +1078,7 @@ class Parser:
         return
 
     def identifierTail(self):
+        print("Identifier Tail")
         # ',' - 114
         if (self.lookAhead.getType() == TokenType.MP_COMMA):
             self.match(TokenType.MP_COMMA)
@@ -1086,6 +1099,7 @@ class Parser:
         return
 
     def match(self, tokenType):
+        print("Matched: %s" % (tokenType))
         if self.lookAhead.getType() == tokenType:
             self.idenType = self.lookAhead.getType()
             self.p = self.p + 1
@@ -1094,6 +1108,6 @@ class Parser:
         else:
             self.error()
 
-    def error(self, li):
+    def error(self):
         t = self.lookAhead
         print("Error at line %s, column %s: found %s" % (t.getLineNumber(), t.getColumnNumber(), t.getType()))

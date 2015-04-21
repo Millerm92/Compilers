@@ -1,8 +1,4 @@
 # Token Type
-# This enumerated type has not been tested
-# I haven't been implementing it
-
-
 class TokenType(object):
     # RESERVED WORDS
     MP_AND = "MP_AND"

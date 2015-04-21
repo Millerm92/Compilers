@@ -40,7 +40,7 @@ class SymbolTable:
     def getOffset(self, inLexeme):
         for s in self.tuples:
             if (s.getLexeme() == inLexeme):
-                ret = [s.getOffset, self.nestLevel]
+                ret = s.getOffset()
                 return ret
 
     def getType(self, inLexeme):
@@ -59,6 +59,6 @@ class SymbolTable:
                 return s
 
     def printSymbolTable(self):
-        print("\n%s, %d" % (self.name, self.nestLevel))
+        print("\nSymbol Table: %s, Nesting Level: %d" % (self.name, self.nestLevel))
         for t in self.tuples:
             t.printSymbol()
