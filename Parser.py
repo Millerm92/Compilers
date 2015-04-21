@@ -887,15 +887,15 @@ class Parser:
         # or - 90
         if (self.lookAhead.getType() == TokenType.MP_OR):
             self.match(TokenType.MP_OR)
-            return "ADDS"
+            return "ORS"
         # + - 88
         elif (self.lookAhead.getType() == TokenType.MP_PLUS):
             self.match(TokenType.MP_PLUS)
-            return "SUBS"
+            return "ADDS"
         # '-' - 89
         elif (self.lookAhead.getType() == TokenType.MP_MINUS):
             self.match(TokenType.MP_MINUS)
-            return "ORS"
+            return "SUBS"
         else:
             self.error()
         return
