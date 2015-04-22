@@ -27,12 +27,12 @@ begin
   e := 10 mod 11 mod 12 mod 13 mod 14 mod 15 mod 16;
   f := -(6);
 
-  write(a);
-  write(c);
+  writeln(a);
+  writeln(c);
 
-  write(e);
-  write(f);
+  writeln(e);
+  writeln(f);
 
-  write(g*g*g*g*g*g*h*h*h*h*h*2, g);
+  writeln(g*g*g*g*g*g*h*h*h*h*h*2, g);
 
 end.
