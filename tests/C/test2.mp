@@ -39,46 +39,46 @@ begin
 {WRITE STATEMENT}
 
         {write Factor -> unsigned int}
-        write( 100 );
+        writeln( 100 );
 
         {write Factor -> variable identifier}
-        write (a);
+        writeln (a);
 
         {write Factor ->"(" Expression ")" }
-        write( (100) );
+        writeln( (100) );
 
         {write Term -> Factor FactorTail}
                 {write Term -> Factor      see the above operations}
                 {write Term -> Factor MutiplyingOperator Factor FactorTail}
                         {write Term -> Factor "*" Factor FactorTail}
-                        write( a * b );
+                        writeln( a * b );
 
                         {write Term -> Factor "div" Factor FactorTail}
-                        write( c div d );
+                        writeln( c div d );
 
                         {write Term -> Factor "mod" Factor FactorTail}
-                        write( a mod e );
+                        writeln( a mod e );
 
     {write Simple Expression -> Term TermTail}
             {write SimpleExpression -> Term AddingOperator Term TermTail}
             {write SimpleExpression -> Term "+" Term TermTail}
-            write(a + b);
+            writeln(a + b);
 
             {write SimpleExpression -> Term "-" Term TermTail}
-            write(c-b); 
+            writeln(c-b); 
     
     {write SimpleExpression -> OptionalSign Term TermTail}
         {write SimpleExpression -> "+" Term}
-        write( + 88);
+        writeln( + 88);
         
         {write SimpleExpression -> "-" Term}
-        write(-66);
+        writeln(-66);
         
         {write SimpleExpression -> "+"  Term "+" Term TermTail} 
-                write(+ a + b);
+                writeln(+ a + b);
 
         {write SimpleExpression -> "-"  Term "+" Term TermTail}
-                write(-(a + b));
+                writeln(-(a + b));
 
     {write Expression -> Simple Expression OptionalRelationalPart}
         {write Epression -> SimpleExpression RelationalOperator SimpleExpression}
