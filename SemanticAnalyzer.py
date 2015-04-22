@@ -15,7 +15,7 @@ class SemanticAnalyzer:
         self.outputFile.write(inString)
 
     def blockDec(self, inSize):
-        self.outputFile.write("ADD SP #%d SP\n" % inSize)
+        self.outputFile.write("ADD SP #%d SP\n" % (inSize + 1))
 
     def pushToStack(self, lexeme, sTable):
         offset = sTable.getOffset(lexeme)
