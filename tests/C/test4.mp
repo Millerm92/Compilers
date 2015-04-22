@@ -1,7 +1,12 @@
 program mathTest;
 var a, b, c, d, e, f: boolean;
+x, y, z : integer;
 
 begin
+
+x := 1;
+y := 2;
+z := 3;
 
 writeln(a);
 
