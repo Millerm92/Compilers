@@ -21,7 +21,6 @@ class Parser:
     idenKind = None
     idenType = None
     idenMode = None
-    listOfParams = None
 
     def __init__(self):
         self.tokens = []
@@ -83,14 +82,9 @@ class Parser:
         # program - 3
         if (self.lookAhead.getType() == TokenType.MP_PROGRAM):
             self.match(TokenType.MP_PROGRAM)
-
-            # HERE
             self.label += 1
             self.curTable = SymbolTable.SymbolTable(self.tokens[self.p].getLexeme(), self.label, None)
-
             self.programIdentifier()
-
-            # HERE
             self.semanticAnalyzer.write("PUSH D0\n")
             self.semanticAnalyzer.write("MOV SP D0\n")
 
@@ -105,13 +99,8 @@ class Parser:
         if (self.lookAhead.getType() in l1):
             self.variableDeclarationPart()
             self.procedureAndFunctionDeclarationPart()
-
-            # HERE INSERT SEMANTICS
             self.semanticAnalyzer.blockDec(len(self.curTable.getTuples()))
-
             self.statementPart()
-
-            # HERE INSERT SEMANTCS
             self.curTable.printSymbolTable()
             self.curTable = self.curTable.getParent()
 
@@ -156,16 +145,10 @@ class Parser:
         print("Variable Declaration")
         # id - 9
         if(self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
-            # HERE - save current index of already completed tuples,
             index = len(self.curTable.getTuples())
-
             self.identifierList()
             self.match(TokenType.MP_COLON)
             self.type()
-
-            # HERE - now that tuples with blank types have been inserted
-            # we can set their type to whatever our global type says starting
-            # from the index we saved above
             t = self.curTable.getTuples()
             for i in range(index, len(self.curTable.getTuples())):
                 t[i].setType(self.idenType)
@@ -258,7 +241,6 @@ class Parser:
             self.optionalFormalParameterList()
             self.match(TokenType.MP_COLON)
             self.type()
-
             return
         else:
             self.error()
@@ -434,8 +416,6 @@ class Parser:
         elif (self.lookAhead.getType() in l2):
             self.writeStatement()
             return
-        # HERE HERE HERE HERE, DO I DO BOTH?
-        # id - 38,43
         elif (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
             # HERE
             if self.tokens[self.p + 1].getType() == TokenType.MP_ASSIGN:
@@ -491,7 +471,6 @@ class Parser:
         print("Read Parameter")
         # id - 48
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
-            # HERE
             self.semanticAnalyzer.readStatement(self.tokens[self.p].getLexeme(), self.curTable)
             self.variableIdentifier()
             return
@@ -505,7 +484,6 @@ class Parser:
         if (self.lookAhead.getType() == TokenType.MP_WRITE):
             self.match(TokenType.MP_WRITE)
             self.match(TokenType.MP_LPAREN)
-            # HERE
             self.writeParameter(False)
             self.writeParameterTail(False)
             self.match(TokenType.MP_RPAREN)
@@ -514,7 +492,6 @@ class Parser:
         elif (self.lookAhead.getType() == TokenType.MP_WRITELN):
             self.match(TokenType.MP_WRITELN)
             self.match(TokenType.MP_LPAREN)
-            # HERE
             self.writeParameter(True)
             self.writeParameterTail(True)
             self.match(TokenType.MP_RPAREN)
@@ -523,7 +500,6 @@ class Parser:
             self.error()
         return
 
-    # HERE
     def writeParameterTail(self, inLine):
         print("Write Parameter Tail")
         # ',' - 51
@@ -541,30 +517,23 @@ class Parser:
             self.error()
         return
 
-    # HERE
     def writeParameter(self, inLine):
         print("Write Parameter")
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 53
         if (self.lookAhead.getType() in l1):
-            # HERE
             self.ordinalExpression()
-            # HERE
             self.semanticAnalyzer.writeStatement(inLine)
             return
         else:
             self.error()
         return
 
-    # RESUME
     def assignmentStatement(self):
         print("Assignment Statement")
         # HERE HERE HERE HERE
         # id - 54, 55
-
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
-
-            # HERE
             thisToken = self.tokens[self.p]
             _type = self.curTable.getType(thisToken.getLexeme())
             self.curTable.printSymbolTable()
@@ -603,13 +572,10 @@ class Parser:
     def optionalElsePart(self):
         print("Optional Else Part")
         l1 = [TokenType.MP_END, TokenType.MP_UNTIL, TokenType.MP_SCOLON]
-        # HERE HERE HERE HERE
         # else - 57, 58
         if (self.lookAhead.getType() == TokenType):
             self.match(TokenType.MP_ELSE)
             self.statement()
-
-            # return
             return
         # end, until, ; - 58
         elif (self.lookAhead.getType() in l1):
@@ -766,20 +732,19 @@ class Parser:
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 73
         if (self.lookAhead.getType() in l1):
-            _type = self.simpleExpression()
-            boolCheck = self.optionalRelationalPart()
+            term1Type = self.simpleExpression()
+            boolCheck = self.optionalRelationalPart(term1Type)
             if (boolCheck):
                 return "MP_BOOLEAN"
             else:
-                return _type
-            return _type
+                return term1Type
+            return term1Type
         else:
             self.error()
         return
 
-    def optionalRelationalPart(self):
+    def optionalRelationalPart(self, term1Type):
         print("Optional Relational Part")
-        # HERE: ADDED RPAREN TO L1
         l1 = [TokenType.MP_DO, TokenType.MP_DOWNTO, TokenType.MP_ELSE, TokenType.MP_END, TokenType.MP_THEN, TokenType.MP_TO, TokenType.MP_UNTIL, TokenType.MP_COMMA, TokenType.MP_SCOLON, TokenType.MP_LPAREN, TokenType.MP_RPAREN]
         l2 = [TokenType.MP_EQUAL, TokenType.MP_GTHAN, TokenType.MP_LTHAN, TokenType.MP_LEQUAL, TokenType.MP_GEQUAL, TokenType.MP_NEQUAL]
         # do, downto, else, end, then, to, until, ',', ;, ( - 75
@@ -787,8 +752,9 @@ class Parser:
             return
         # =, >, <, <=, >=, <> - 74
         elif (self.lookAhead.getType() in l2):
-            self.relationalOperator()
-            self.simpleExpression()
+            operator = self.relationalOperator()
+            term2Type = self.simpleExpression()
+            self.semanticAnalyzer.expression(term1Type, term2Type, operator)
             return
         else:
             self.error()
@@ -799,27 +765,28 @@ class Parser:
         # = - 76
         if (self.lookAhead.getType() == TokenType.MP_EQUAL):
             self.match(TokenType.MP_EQUAL)
+            return "CMPEQS"
             return
         # > - 78
         elif (self.lookAhead.getType() == TokenType.MP_GTHAN):
             self.match(TokenType.MP_GTHAN)
-            return
+            return "CMPGTS"
         # < - 77
         elif (self.lookAhead.getType() == TokenType.MP_LTHAN):
             self.match(TokenType.MP_LTHAN)
-            return
+            return "CMPLTS"
         # <= - 79
         elif (self.lookAhead.getType() == TokenType.MP_LEQUAL):
             self.match(TokenType.MP_LEQUAL)
-            return
+            return "CMPLES"
         # >= - 80
         elif (self.lookAhead.getType() == TokenType.MP_GEQUAL):
             self.match(TokenType.MP_GEQUAL)
-            return
+            return "CMPGES"
         # <> - 81
         elif (self.lookAhead.getType() == TokenType.MP_NEQUAL):
             self.match(TokenType.MP_NEQUAL)
-            return
+            return"CMPNES"
         else:
             self.error()
         return
@@ -965,16 +932,19 @@ class Parser:
         # false - 103
         if (self.lookAhead.getType() == TokenType.MP_FALSE):
             self.match(TokenType.MP_FALSE)
-            return
+            self.semanticAnalyzer.pushLitToStack("0")
+            return TokenType.MP_BOOLEAN
         # not - 104
         elif (self.lookAhead.getType() == TokenType.MP_NOT):
             self.match(TokenType.MP_NOT)
             self.factor()
-            return
+            self.semanticAnalyzer.write("NOTS\n")
+            return TokenType.MP_BOOLEAN
         # true - 102
         elif (self.lookAhead.getType() == TokenType.MP_TRUE):
             self.match(TokenType.MP_TRUE)
-            return
+            self.semanticAnalyzer.pushLitToStack("1")
+            return TokenType.MP_BOOLEAN
         # HERE HERE HERE HERE
         # id - 106, 116
         elif (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
@@ -987,25 +957,24 @@ class Parser:
         # int_lit - 99
         elif (self.lookAhead.getType() == TokenType.MP_INTEGER_LIT):
             self.semanticAnalyzer.pushLitToStack(self.tokens[self.p].getLexeme())
-
             self.match(TokenType.MP_INTEGER_LIT)
-            return
+            return TokenType.MP_INTEGER
         # float_lit - 100
         elif (self.lookAhead.getType() == TokenType.MP_FLOAT_LIT):
             self.semanticAnalyzer.pushLitToStack(self.tokens[self.p].getLexeme())
             self.match(Token.MP_FLOAT_LIT)
-            return
+            return TokenType.MP_FLOAT
         # string_lit - 101
         elif (self.lookAhead.getType() == TokenType.MP_STRING_LIT):
             self.semanticAnalyzer.pushLitToStack(self.tokens[self.p].getLexeme())
             self.match(TokenType.MP_STRING_LIT)
-            return
+            return TokenType.MP_STRING
         # ( - 105
         elif (self.lookAhead.getType() == TokenType.MP_LPAREN):
             self.match(TokenType.MP_LPAREN)
-            self.expression()
+            val = self.expression()
             self.match(TokenType.MP_RPAREN)
-            return
+            return val
         else:
             self.error()
         return
@@ -1076,8 +1045,6 @@ class Parser:
         print("Identifier List")
         # id - 113
         if (self.lookAhead.getType() == TokenType.MP_IDENTIFIER):
-
-            # HERE
             token = self.tokens[self.p]
             aSymbol = Symbol.Symbol(token.getLexeme(), self.idenType, self.idenKind, self.curTable.getNumTuples(), None)
             self.curTable.insert(aSymbol)
@@ -1094,8 +1061,6 @@ class Parser:
         # ',' - 114
         if (self.lookAhead.getType() == TokenType.MP_COMMA):
             self.match(TokenType.MP_COMMA)
-
-            # HERE
             token = self.tokens[self.p]
             aSymbol = Symbol.Symbol(token.getLexeme(), self.idenType, self.idenKind, self.curTable.getNumTuples(), None)
             self.curTable.insert(aSymbol)
