@@ -658,6 +658,7 @@ class Parser:
             else:
                 self.semanticAnalyzer.expression(_type, final, "CMPGTS")
 
+            self.semanticAnalyzer.write("BRTS %s\n" % endLabel)
             self.match(TokenType.MP_DO)
             self.statement()
 
