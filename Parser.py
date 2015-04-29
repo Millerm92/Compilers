@@ -673,7 +673,7 @@ class Parser:
                 self.semanticAnalyzer.write("POP %d(D0)\n" % offset)
 
             self.semanticAnalyzer.write("BR %s\n" % startLabel)
-            self.semanticAnalyzer.write(endLabel)
+            self.semanticAnalyzer.write("%s:\n" % endLabel)
 
             return
         else:
