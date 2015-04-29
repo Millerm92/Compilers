@@ -808,6 +808,7 @@ class Parser:
         elif (self.lookAhead.getType() in l2):
             operator = self.relationalOperator()
             term2Type = self.simpleExpression()
+            print("HERE 1")
             self.semanticAnalyzer.expression(term1Type, term2Type, operator)
             return True
         else:
@@ -855,6 +856,7 @@ class Parser:
 
             if (sign):
                 self.semanticAnalyzer.pushLitToStack("-1")
+                print("HERE 2")
                 self.semanticAnalyzer.expression(term1, "MP_INTEGER", "MULS")
 
             self.termTail(term1)
@@ -878,6 +880,7 @@ class Parser:
         elif (self.lookAhead.getType() in l3):
             operator = self.addingOperator()
             term2 = self.term()
+            print("HERE 3")
             self.semanticAnalyzer.expression(term1, term2, operator)
             self.termTail(term1)
             return
@@ -942,6 +945,7 @@ class Parser:
         if (self.lookAhead.getType() in l1):
             operator = self.multiplyingOperator()
             term2Type = self.factor()
+            print("HERE 4")
             self.semanticAnalyzer.expression(term1Type, term2Type, operator)
             self.factorTail(term1Type)
             return
