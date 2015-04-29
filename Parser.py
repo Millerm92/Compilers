@@ -563,8 +563,8 @@ class Parser:
             boolExp = self.booleanExpression()
             if (boolExp == TokenType.MP_BOOLEAN):
                 self.label += 2
-                thisLabel = ("L%d" % (self.label - 1))
-                elseLabel = ("L%d" % self.label)
+                thisLabel = ("L%d:" % (self.label - 1))
+                elseLabel = ("L%d:" % self.label)
                 self.semanticAnalyzer.write("BRFS %s\n" % thisLabel)
 
                 self.match(TokenType.MP_THEN)
@@ -599,7 +599,7 @@ class Parser:
         if (self.lookAhead.getType() == TokenType.MP_REPEAT):
             self.match(TokenType.MP_REPEAT)
             self.label += 1
-            loopStart = ("L%s\n" % self.label)
+            loopStart = ("L%s\n:" % self.label)
             self.semanticAnalyzer.write(loopStart)
             self.statementSequence()
             self.match(TokenType.MP_UNTIL)
@@ -616,9 +616,9 @@ class Parser:
         if (self.lookAhead.getType() == TokenType.MP_WHILE):
             self.match(TokenType.MP_WHILE)
             self.label += 1
-            conditionLabel = ("L%s\n" % self.label)
+            conditionLabel = ("L:%s\n" % self.label)
             self.label += 1
-            endLabel = ("L%s\n" % self.label)
+            endLabel = ("L%s:\n" % self.label)
             self.semanticAnalyzer.write(conditionLabel)
             self.booleanExpression()
             self.semanticAnalyzer.write("BRFS %s\n" % endLabel)
@@ -637,8 +637,8 @@ class Parser:
         if (self.lookAhead.getType() == TokenType.MP_FOR):
             self.match(TokenType.MP_FOR)
             self.label += 2
-            startLabel = ("L%d\n" % self.label)
-            endLabel = ("L%d\n" % (self.label - 1))
+            startLabel = ("L%d:\n" % self.label)
+            endLabel = ("L%d:\n" % (self.label - 1))
 
             token = self.tokens[self.p]
             offset = self.curTable.getOffset(token.getLexeme())
