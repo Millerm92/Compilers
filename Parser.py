@@ -672,7 +672,7 @@ class Parser:
                 self.semanticAnalyzer.expression(_type, TokenType.MP_INTEGER, "SUBS")
                 self.semanticAnalyzer.write("POP %d(D0)\n" % offset)
 
-            self.semanticAnalyzer.write("BR %s" % startLabel)
+            self.semanticAnalyzer.write("BR %s\n" % startLabel)
             self.semanticAnalyzer.write(endLabel)
 
             return
