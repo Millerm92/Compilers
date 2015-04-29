@@ -58,7 +58,7 @@ class SemanticAnalyzer:
             pass
         elif term1 == "MP_INTEGER" and term2 == "MP_FLOAT":
             self.outputFile.write("CASTSI\n")
-        elif term1 == "MP_FLOAT" and term2:
+        elif term1 == "MP_FLOAT" and term2 == "MP_INTEGER":
             self.outputFile.write("CASTF\n")
         else:
             print("ERROR: Incompatable Types")
