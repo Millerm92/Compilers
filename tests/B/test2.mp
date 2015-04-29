@@ -16,7 +16,7 @@ program forTest;
     for I := 1 to N do
       Writeln(I);
 
-    for I := 20 downto N do
-      Writeln(I);
+ {   for I := 20 downto N do}
+ {     Writeln("b");}
  
   end.
