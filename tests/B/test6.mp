@@ -16,17 +16,17 @@ read(b, c, d);
 
    for a:= 1 downto b do
    begin
-    write(a);
+    writeln(a);
     {writeln();}
     
     while (c < d) do
     begin
-        write(c);
+        writeln(c);
         {writeln();}
         c:= c+1;
         
         repeat 
-            write(d);
+            writeln(d);
             {writeln();}
             d := d-1;
         until (d  <  10)

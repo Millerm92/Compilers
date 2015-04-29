@@ -25,10 +25,4 @@ writeln(e);
 e := (x < y) and (y < z);
 writeln(e);
 
-f:= b*a;
-writeln(f);
-
-f := c*d;
-writeln(f);
-
 end.

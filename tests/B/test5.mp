@@ -44,33 +44,33 @@ begin
 
     repeat
         c := c + 1;
-        write(c);
+        writeln(c);
     until c > 10;
 
     WHILE c > 0 DO
     begin
        c := c - 1;
-       write(c);
+       writeln(c);
     end;
 
     c := 4;
     for d := 1 to c do
      begin
-        Write(d);
-        Write(c);
+        Writeln(d);
+        Writeln(c);
         c := c + 1;
      end;
 
-    write(c);
+    writeln(c);
 
         a := 3;
     b := 4;
 
         c := 20 div b;
-        write(c);
+        writeln(c);
 
     IF NOT (a < b) THEN
-      WRITE(a);
+      WRITELN(a);
 
 
 end.

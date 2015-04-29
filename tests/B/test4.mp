@@ -63,46 +63,46 @@ begin
 
 read(a, b);
 
-    write(a);
+    writeln(a);
     {writeln();}
 
     while a > b do
     begin
       a := a - 1;
-      write(a);
+      writeln(a);
       {writeln();}
     end;
 
     a := 20;
-    write(a);
+    writeln(a);
     {writeln();}
 
     while a >= b do
     begin
       a := a - 1;
-      write(a);
+      writeln(a);
       {writeln();}
     end;
 
     a:= 0;
-    write(a);
+    writeln(a);
     {writeln();}
 
     while a < b do
     begin
       a := a + 1;
-      write(a);
+      writeln(a);
       {writeln();}
     end;
 
     a := 0;
-    write(a);
+    writeln(a);
     {writeln();}
 
     while a <= b do
     begin
       a := a + 1;
-      write(a);
+      writeln(a);
       {writeln();}
     end;
     

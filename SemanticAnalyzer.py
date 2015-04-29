@@ -22,7 +22,7 @@ class SemanticAnalyzer:
         if offset is not None:
             self.outputFile.write("PUSH %d(D0)\n" % offset)
         else:
-            print("Error: %s is undeclared" % (lexeme))
+            print("ERROR: %s is undeclared" % (lexeme))
 
     def pushLitToStack(self, inLit):
         self.outputFile.write("PUSH #%s\n" % str(inLit))
@@ -40,7 +40,7 @@ class SemanticAnalyzer:
         elif res == "MP_INTEGER" and expType == "MP_FLOAT":
             self.outputFile.write("CASTSI\n")
         else:
-            print("Assignment of conflicting types")
+            print("ERROR: Assignment of conflicting types")
 
         self.outputFile.write("POP %d(D0)\n" % offset)
 

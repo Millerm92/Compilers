@@ -14,9 +14,9 @@ program forTest;
   begin
     Read(N);
     for I := 1 to N do
-      Write(I);
+      Writeln(I);
 
     for I := 20 downto N do
-      Write(I);
+      Writeln(I);
  
   end.

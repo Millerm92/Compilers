@@ -8,7 +8,7 @@ begin
 repeat
  read(a);
  read(b);
- write(a, b);
+ writeln(a, b);
 until a > b;
 
 end.

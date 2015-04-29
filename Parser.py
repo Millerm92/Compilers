@@ -361,7 +361,6 @@ class Parser:
 
     def statementTail(self):
         print("Statement Tail")
-        # HERE: CHANGED MP_END FROM MP_ELSE
         l1 = [TokenType.MP_END, TokenType.MP_UNTIL]
         # end, until - 33
         if (self.lookAhead.getType() in l1):
@@ -373,6 +372,7 @@ class Parser:
             self.statementTail()
             return
         else:
+
             self.error()
         return
 
@@ -560,11 +560,20 @@ class Parser:
         # if - 56
         if (self.lookAhead.getType() == TokenType.MP_IF):
             self.match(TokenType.MP_IF)
-            self.booleanExpression()
-            self.match(TokenType.MP_THEN)
-            self.statement()
-            self.optionalElsePart()
-            return
+            boolExp = self.booleanExpression()
+            if (boolExp == TokenType.MP_BOOLEAN):
+                self.label += 2
+                thisLabel = ("L%d" % (self.label - 1))
+                elseLabel = ("L%d" % self.label)
+                self.semanticAnalyzer.write("BRFS %s\n" % thisLabel)
+
+                self.match(TokenType.MP_THEN)
+                self.statement()
+                self.semanticAnalyzer.write("BR %s\n" % elseLabel)
+                self.semanticAnalyzer.write("%s\n" % thisLabel)
+                self.optionalElsePart()
+                self.semanticAnalyzer.write("%s\n" % elseLabel)
+                return
         else:
             self.error()
         return
@@ -573,7 +582,7 @@ class Parser:
         print("Optional Else Part")
         l1 = [TokenType.MP_END, TokenType.MP_UNTIL, TokenType.MP_SCOLON]
         # else - 57, 58
-        if (self.lookAhead.getType() == TokenType):
+        if (self.lookAhead.getType() == TokenType.MP_ELSE):
             self.match(TokenType.MP_ELSE)
             self.statement()
             return
@@ -589,9 +598,13 @@ class Parser:
         # repeat - 59
         if (self.lookAhead.getType() == TokenType.MP_REPEAT):
             self.match(TokenType.MP_REPEAT)
+            self.label += 1
+            loopStart = ("L%s\n" % self.label)
+            self.semanticAnalyzer.write(loopStart)
             self.statementSequence()
             self.match(TokenType.MP_UNTIL)
             self.booleanExpression()
+            self.semanticAnalyzer.write("BRFS %s\n" % loopStart)
             return
         else:
             self.error()
@@ -602,9 +615,17 @@ class Parser:
         # while - 60
         if (self.lookAhead.getType() == TokenType.MP_WHILE):
             self.match(TokenType.MP_WHILE)
+            self.label += 1
+            conditionLabel = ("L%s\n" % self.label)
+            self.label += 1
+            endLabel = ("L%s\n" % self.label)
+            self.semanticAnalyzer.write(conditionLabel)
             self.booleanExpression()
+            self.semanticAnalyzer.write("BRFS %s\n" % endLabel)
             self.match(TokenType.MP_DO)
             self.statement()
+            self.semanticAnalyzer.write("BR %s\n" % conditionLabel)
+            self.semanticAnalyzer.write(endLabel)
             return
         else:
             self.error()
@@ -615,13 +636,45 @@ class Parser:
         # for - 61
         if (self.lookAhead.getType() == TokenType.MP_FOR):
             self.match(TokenType.MP_FOR)
+            self.label += 2
+            startLabel = ("L%d\n" % self.label)
+            endLabel = ("L%d\n" % (self.label - 1))
+
+            token = self.tokens[self.p]
+            offset = self.curTable.getOffset(token.getLexeme())
+            _type = self.curTable.getOffset(token.getType())
+
             self.controleVariable()
             self.match(TokenType.MP_ASSIGN)
-            self.initialValue()
-            self.stepValue()
-            self.finalValue()
+
+            exprType = self.initialValue()
+            self.semanticAnalyzer.assignment(_type, exprType, offset)
+            step = self.stepValue()
+            self.semanticAnalyzer.write(startLabel)
+            final = self.finalValue()
+            self.semanticAnalyzer.write("PUSH %d(D0)\n" % offset)
+            if step:
+                self.semanticAnalyzer.expression(_type, final, "CMPLTS")
+            else:
+                self.semanticAnalyzer.expression(_type, final, "CMPGTS")
+
             self.match(TokenType.MP_DO)
             self.statement()
+
+            if step:
+                self.semanticAnalyzer.write("PUSH %d(D0)\n" % offset)
+                self.semanticAnalyzer.write("PUSH #1\n")
+                self.semanticAnalyzer.expression(_type, TokenType.MP_INTEGER, "ADDS")
+                self.semanticAnalyzer.write("POP %d(D0)\n" % offset)
+            else:
+                self.semanticAnalyzer.write("PUSH %d(D0)\n" % offset)
+                self.semanticAnalyzer.write("PUSH #1\n")
+                self.semanticAnalyzer.expression(_type, TokenType.MP_INTEGER, "SUBS")
+                self.semanticAnalyzer.write("POP %d(D0)\n" % offset)
+
+            self.semanticAnalyzer.write("BR %s" % startLabel)
+            self.semanticAnalyzer.write(endLabel)
+
             return
         else:
             self.error()
@@ -653,11 +706,11 @@ class Parser:
         # downto - 65
         if (self.lookAhead.getType() == TokenType.MP_DOWNTO):
             self.match(TokenType.MP_DOWNTO)
-            return
+            return False
         # to - 64
         elif (self.lookAhead.getType() == TokenType.MP_TO):
             self.match(TokenType.MP_TO)
-            return
+            return True
         else:
             self.error()
         return
@@ -735,7 +788,7 @@ class Parser:
             term1Type = self.simpleExpression()
             boolCheck = self.optionalRelationalPart(term1Type)
             if (boolCheck):
-                return "MP_BOOLEAN"
+                return TokenType.MP_BOOLEAN
             else:
                 return term1Type
             return term1Type
@@ -749,13 +802,13 @@ class Parser:
         l2 = [TokenType.MP_EQUAL, TokenType.MP_GTHAN, TokenType.MP_LTHAN, TokenType.MP_LEQUAL, TokenType.MP_GEQUAL, TokenType.MP_NEQUAL]
         # do, downto, else, end, then, to, until, ',', ;, ( - 75
         if (self.lookAhead.getType() in l1):
-            return
+            return False
         # =, >, <, <=, >=, <> - 74
         elif (self.lookAhead.getType() in l2):
             operator = self.relationalOperator()
             term2Type = self.simpleExpression()
             self.semanticAnalyzer.expression(term1Type, term2Type, operator)
-            return
+            return True
         else:
             self.error()
         return
@@ -804,7 +857,7 @@ class Parser:
                 self.semanticAnalyzer.expression(term1, "MP_INTEGER", "MULS")
 
             self.termTail(term1)
-            return
+            return term1
         else:
             self.error()
         return
@@ -1024,8 +1077,8 @@ class Parser:
         l1 = [TokenType.MP_FALSE, TokenType.MP_NOT, TokenType.MP_TRUE, TokenType.MP_IDENTIFIER, TokenType.MP_INTEGER_LIT, TokenType.MP_FLOAT_LIT, TokenType.MP_STRING_LIT, TokenType.MP_LPAREN, TokenType.MP_PLUS, TokenType.MP_MINUS]
         # false, not, true, id, int_lit, float_lit, string_lit, (, +, '-' - 111
         if (self.lookAhead.getType() in l1):
-            self.expression()
-            return
+            res = self.expression()
+            return res
         else:
             self.error()
         return

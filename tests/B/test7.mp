@@ -6,92 +6,92 @@ begin
 
           
 {SINGLE COMPARISON}
-    write(1111111);
+    writeln(1111111);
     {writeln();}
     a := 0;
     { exp OR exp }
         while ( (5 * 2) > a) or ( 4 > a ) do
         begin
-          write(a);
+          writeln(a);
           {writeln();}
           a := a + 1;
         end;
 
-    write(2222222);
+    writeln(2222222);
     {writeln();}
     a := 0;
     { exp OR exp }
         while ( (5 * 2) < a) or ( 4 > a ) do
         begin
-          write(a);
+          writeln(a);
           {writeln();}
           a := a + 1;
         end;
 
-    write(3333333);
+    writeln(3333333);
     {writeln();}
     a := 0;
     { exp OR exp }
         while ( (5 * 2) > a) or ( 400 < a ) do
         begin
-          write(a);
+          writeln(a);
          { writeln();}
           a := a + 1;
         end;
 
-    write(4444444);
+    writeln(4444444);
     {writeln();}
     a := 0;
     { exp OR exp }
         while ( (5 * 2) < a) or ( 400 < a ) do
         begin
-          write(a);
+          writeln(a);
           {writeln();}
           a := a + 1;
         end;
 
 
 
-    write(1111111);
+    writeln(1111111);
     {writeln();}
     a := 0;
     { exp AND exp }  
         while (a <= 10) and (a <= 1) do
         begin               
-      write(a);
+      writeln(a);
          { writeln();}
           a := a + 1;
         end;
 
-    write(2222222);
+    writeln(2222222);
     {writeln();}
     a := 0;
     { exp AND exp }  
         while (a <= 10) and (a =  1) do
         begin               
-      write(a);
+      writeln(a);
          { writeln();}
           a := a + 1;
         end;
 
-    write(3333333);
+    writeln(3333333);
     {writeln();}
     a := 0;
     { exp AND exp }  
         while (a <> (0*0)) and (a < 1) do
         begin               
-      write(a);
+      writeln(a);
          { writeln();}
           a := a + 1;
         end;
 
-    write(4444444);
+    writeln(4444444);
     {writeln();}
     a := 0;
     { exp AND exp }  
         while (a <> (0*0)) and (a > 1) do
         begin               
-      write(a);
+      writeln(a);
          { writeln();}
           a := a + 1;
         end;
@@ -101,35 +101,35 @@ begin
     read(a, b, c, d);
 
     { exp AND exp AND exp }
-    write(2222222);
+    writeln(2222222);
     {writeln();}
     a := 0;
         while (a < 3) and (2 < d) and (b < 10) do
         begin
           a := a + 1;
-          write(a);
+          writeln(a);
           {writeln();}
         end;
 
     { exp OR exp AND exp }
-    write(3333333);
+    writeln(3333333);
     {writeln();}
     a := 0;
         while (a < 3) or (2 > d) and (b < 10) do
         begin
           a := a + 1;
-          write(a);
+          writeln(a);
          { writeln();}
         end;
 
     { exp AND exp OR exp }
-    write(4444444);
+    writeln(4444444);
     {writeln();}
     a := 0;
         while (a < 3) and (2 < d) or (b > 10) do
         begin
           a := a + 1;
-          write(a);
+          writeln(a);
           {writeln();}
         end;
 

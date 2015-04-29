@@ -29,77 +29,77 @@ b := 10;
 {write Expression -> Simple Expression OptionalRelationalPart}
    {write Epression -> SimpleExpression RelationalOperator SimpleExpression}
         {write Epression -> SimpleExpression "=" SimpleExpression}
-    write(a = b);
+    writeln(a = b);
 {writeln();}
         {write Epression -> SimpleExpression "<" SimpleExpression}
-    write(a < b);
+    writeln(a < b);
 {writeln();}
         {write Epression -> SimpleExpression ">" SimpleExpression}
-    write( a > b);
+    writeln( a > b);
 {writeln();}
         {write Epression -> SimpleExpression "<=" SimpleExpression}
-    write(a <= b);
+    writeln(a <= b);
 {writeln();}
         {write Epression -> SimpleExpression ">=" SimpleExpression}
-    write(a >= b);
+    writeln(a >= b);
 {writeln();}    
     {write Epression -> SimpleExpression "<>" SimpleExpression}
-    write(a <> b);
+    writeln(a <> b);
 
 
 
 
 
 if (a < b) then
-    write(a)
+    write(lna)
 else
-    write(b);
+    writeln(b);
 {writeln();}
 if (a > b) then
-    write(a)
+    writeln(a)
 else
-    write(b);
+    writeln(b);
 {writeln();}
 if (a <= b) then
-    write(a)
+    writeln(a)
 else
-    write(b);
+    writeln(b);
 {writeln();}
 if (a >= b) then
-    write(a)
+    writeln(a)
 else
-    write(b);
+    writeln(b);
 {writeln();}
 if (a = b) then
-    write(a)
+    writeln(a)
 else
-    write(b);
+    writeln(b);
 {writeln();}
 if (a <> b) then
-    write(a) 
+    writeln(a) 
 else
-    write(b);
+    writeln(b);
 {writeln();}
 
 {Boolean operations with complex expressions}
 if ( 1+8 > 8 ) then
-    write(1)
+    writeln(1)
 else
-    write(0);
+    writeln(0);
 
 {writeln();}
 
 if ( 20 mod 4 * 5 = 0 ) then
-    write(1)
+    writeln(1)
 else
-    write(0);
+    writeln(0);
 
 {writeln();}
 
 if ((20+4) div (3+3) > -10000 mod (63+14)) then
-    write(1)
+    writeln(1)
 else
-    write(0);
+    writeln(0);
 {writeln();}
 
 
