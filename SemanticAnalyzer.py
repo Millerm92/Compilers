@@ -28,6 +28,8 @@ class SemanticAnalyzer:
         self.outputFile.write("PUSH #%s\n" % str(inLit))
 
     def assignment(self, res, expType, offset):
+        print(res)
+        print(expType)
         if res == "MP_FIXED":
             res = "MP_FLOAT"
         if expType == "MP_FIXED":
@@ -45,6 +47,8 @@ class SemanticAnalyzer:
         self.outputFile.write("POP %d(D0)\n" % offset)
 
     def expression(self, term1, term2, operator):
+        print(term1)
+        print(term2)
         if(term1 == "MP_FIXED"):
             term1 = "MP_FLOAT"
         if (term2 == "MP_FIXED"):
