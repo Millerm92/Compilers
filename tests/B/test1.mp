@@ -38,32 +38,32 @@ writeln(a <> b);
 
 
 if (a < b) then
-    writeln(a);
+    writeln(a)
 else
     writeln(b);
 
 if (a > b) then
-    writeln(a);
+    writeln(a)
 else
     writeln(b);
 
 if (a <= b) then
-    writeln(a);
+    writeln(a)
 else
     writeln(b);
 
 if (a >= b) then
-    writeln(a);
+    writeln(a)
 else
     writeln(b);
 
 if (a = b) then
-    writeln(a);
+    writeln(a)
 else
     writeln(b);
 
 if (a <> b) then
-    writeln(a); 
+    writeln(a) 
 else
     writeln(b);
 
