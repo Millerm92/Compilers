@@ -642,7 +642,7 @@ class Parser:
 
             token = self.tokens[self.p]
             offset = self.curTable.getOffset(token.getLexeme())
-            _type = self.curTable.getOffset(token.getType())
+            _type = self.curTable.getType(token.getType())
 
             self.controleVariable()
             self.match(TokenType.MP_ASSIGN)
