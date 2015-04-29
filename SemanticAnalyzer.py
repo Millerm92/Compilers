@@ -45,6 +45,8 @@ class SemanticAnalyzer:
         self.outputFile.write("POP %d(D0)\n" % offset)
 
     def expression(self, term1, term2, operator):
+        print(term1)
+        print(term2)
         if(term1 == "MP_FIXED"):
             term1 = "MP_FLOAT"
         if (term2 == "MP_FIXED"):
